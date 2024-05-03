@@ -21,7 +21,7 @@ export const actions: Actions = {
 			provider: 'twitch',
 			options: {
 				redirectTo: 'localhost:5173/auth/confirm',
-				scopes: 'channel:read:subscriptions'
+				scopes: 'channel:read:subscriptions bits:read'
 			}
 		});
 
