@@ -7,7 +7,10 @@
 	import { onMount } from 'svelte';
 
 	export let data;
+	let { session, supabase } = data;
 	$: ({ session, supabase } = data);
+
+	console.log('layout session', session);
 
 	// onMount(() => {
 	// 	const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
@@ -28,5 +31,7 @@
 	// 	return () => data.subscription.unsubscribe();
 	// });
 </script>
+
+<pre>{JSON.stringify(session, null, 2)}</pre>
 
 <slot />

@@ -2,7 +2,10 @@
 	import { onMount } from 'svelte';
 
 	export let data;
+	let { session, supabase } = data;
 	$: ({ session, user } = data);
+
+	console.log('page session', session);
 
 	let twitchReady: boolean = false;
 
@@ -15,8 +18,8 @@
 <div class="h-3 w-full bg-violet-700"></div>
 <div class="h-3 w-full bg-blue-900"></div>
 
-{#if user}
-	<p class="text-3xl text-white">{user.id}</p>
+{#if session?.user}
+	<p class="text-3xl text-white">{session}</p>
 {:else}
 	<p>Not logged in</p>
 {/if}
