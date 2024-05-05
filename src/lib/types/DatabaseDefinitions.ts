@@ -34,7 +34,7 @@ export type Database = {
   }
   public: {
     Tables: {
-      checkins: {
+      check_ins: {
         Row: {
           created_at: string
           id: string
@@ -52,7 +52,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "checkins_profile_id_fkey"
+            foreignKeyName: "check_ins_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -81,17 +81,17 @@ export type Database = {
       profiles: {
         Row: {
           id: string
-          pfp_url: string | null
+          pfp_url: string
           twitch_username: string
         }
         Insert: {
           id: string
-          pfp_url?: string | null
+          pfp_url: string
           twitch_username: string
         }
         Update: {
           id?: string
-          pfp_url?: string | null
+          pfp_url?: string
           twitch_username?: string
         }
         Relationships: [

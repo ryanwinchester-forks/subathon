@@ -1,7 +1,7 @@
 CREATE TABLE "profiles"(
     "id" uuid PRIMARY KEY NOT NULL REFERENCES auth.users ON DELETE CASCADE,
     "twitch_username" text NOT NULL UNIQUE,
-    "pfp_url" text
+    "pfp_url" text NOT NULL
 );
 
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;

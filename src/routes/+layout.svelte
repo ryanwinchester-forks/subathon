@@ -30,4 +30,6 @@
 	// });
 </script>
 
-<slot />
+<div class="text-white">
+	<slot />
+</div>
