@@ -10,8 +10,6 @@
 	let { session, supabase } = data;
 	$: ({ session, supabase } = data);
 
-	console.log('layout session', session);
-
 	// onMount(() => {
 	// 	const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
 	// 		if (!newSession) {
@@ -31,7 +29,5 @@
 	// 	return () => data.subscription.unsubscribe();
 	// });
 </script>
-
-<pre>{JSON.stringify(session, null, 2)}</pre>
 
 <slot />

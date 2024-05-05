@@ -12,6 +12,7 @@ const _URL = dev ? PUBLIC_DEV_URL : PUBLIC_SUPABASE_URL;
 const _ANON_KEY = dev ? PUBLIC_DEV_ANON_KEY : PUBLIC_SUPABASE_ANON_KEY;
 
 import type { LayoutLoad } from './$types';
+import type { Database } from '$lib/types/DatabaseDefinitions';
 
 export const load: LayoutLoad = async ({ data, depends, fetch }) => {
 	/**
@@ -21,7 +22,7 @@ export const load: LayoutLoad = async ({ data, depends, fetch }) => {
 	depends('supabase:auth');
 
 	const supabase = isBrowser()
-		? createBrowserClient(_URL, _ANON_KEY, {
+		? createBrowserClient<Database>(_URL, _ANON_KEY, {
 				global: {
 					fetch
 				},
@@ -32,7 +33,7 @@ export const load: LayoutLoad = async ({ data, depends, fetch }) => {
 					}
 				}
 			})
-		: createServerClient(_URL, _ANON_KEY, {
+		: createServerClient<Database>(_URL, _ANON_KEY, {
 				global: {
 					fetch
 				},
@@ -52,13 +53,9 @@ export const load: LayoutLoad = async ({ data, depends, fetch }) => {
 		data: { session }
 	} = await supabase.auth.getSession();
 
-	console.log('session', session);
-
 	const {
 		data: { user }
 	} = await supabase.auth.getUser();
-
-	console.log('user', user);
 
 	return { session, supabase, user };
 };

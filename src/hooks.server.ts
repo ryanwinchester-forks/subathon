@@ -2,6 +2,9 @@ import { createServerClient } from '@supabase/ssr';
 import { type Handle, redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { dev } from '$app/environment';
+
+import type { Database } from '$lib/types/DatabaseDefinitions';
+
 import {
 	PUBLIC_SUPABASE_URL,
 	PUBLIC_SUPABASE_ANON_KEY,
@@ -19,7 +22,7 @@ const supabase: Handle = async ({ event, resolve }) => {
 	 * The Supabase client gets the Auth token from the request cookies.
 	 */
 
-	event.locals.supabase = createServerClient(_URL, _ANON_KEY, {
+	event.locals.supabase = createServerClient<Database>(_URL, _ANON_KEY, {
 		cookies: {
 			get: (key) => event.cookies.get(key),
 			/**
@@ -75,7 +78,6 @@ const supabase: Handle = async ({ event, resolve }) => {
 
 const authGuard: Handle = async ({ event, resolve }) => {
 	const { session, user } = await event.locals.safeGetSession();
-	console.log('authGuard session', session);
 	event.locals.session = session;
 	event.locals.user = user;
 

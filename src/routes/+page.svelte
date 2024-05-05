@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	import type { Database, Tables, Enums } from '$lib/types/DatabaseDefinitions';
+
 	export let data;
 	let { session, supabase } = data;
 	$: ({ session, user } = data);
 
-	console.log('page session', session);
+	const { CheckinsWithProfiles } = data;
 
 	let twitchReady: boolean = false;
 
@@ -18,13 +20,12 @@
 <div class="h-3 w-full bg-violet-700"></div>
 <div class="h-3 w-full bg-blue-900"></div>
 
-{#if session?.user}
-	<p class="text-3xl text-white">{session}</p>
-{:else}
-	<p>Not logged in</p>
-{/if}
-
 <div class="min-w-screen flex min-h-screen flex-col items-center bg-neutral-950 p-8">
+	{#if session?.user}
+		<p class=" text-white">Logged in as {session.user.user_metadata.name}</p>
+	{:else}
+		<p>Not logged in</p>
+	{/if}
 	{#if twitchReady}
 		<iframe
 			loading="lazy"
@@ -37,4 +38,9 @@
 	{:else}
 		<div class="h-[300px] w-full bg-slate-500"></div>
 	{/if}
+
+	{#each CheckinsWithProfiles as checkin}
+		<img class="h-16 w-16 rounded-full" src={checkin.profiles.pfp_url} alt="profile" />
+	{/each}
+	<button></button>
 </div>
