@@ -5,6 +5,14 @@
 	let { session, supabase } = data;
 	$: ({ session, user } = data);
 
+	import * as Dialog from '$lib/components/ui/dialog';
+	import { Button } from '$lib/components/ui/button/index.js';
+
+	let dialogOpen = false;
+
+	const milliSecondsInADay = 24 * 60 * 60 * 1000;
+	const today = new Date();
+
 	const { CheckinsWithProfiles } = data;
 
 	const dateOptions: Intl.DateTimeFormatOptions = {
@@ -13,13 +21,20 @@
 		day: 'numeric'
 	};
 
-	let dates: string = CheckinsWithProfiles?.map(
-		(checkin: typeof CheckinsWithProfiles) => new Date(checkin.created_at)
+	let dates: Date[] =
+		CheckinsWithProfiles?.map(
+			(checkin: typeof CheckinsWithProfiles) => new Date(checkin.created_at)
+		) || [];
+
+	let datesSorted = dates.sort((a: Date, b: Date) => {
+		return b.getTime() - a.getTime();
+	});
+
+	const datesSortedLocaleString = datesSorted.map((date: Date) =>
+		date.toLocaleDateString('en-US', dateOptions)
 	);
 
-	const datesSet: Array<string> = [...new Set(dates)].sort((a, b) => {
-		return Date.parse(b) - Date.parse(a);
-	});
+	const datesSet: string[] = [...new Set(datesSortedLocaleString)];
 
 	interface DatesWithCheckins {
 		date: string;
@@ -44,7 +59,7 @@
 			const formattedDate = new Date(checkin.created_at).toLocaleDateString('en-US', dateOptions);
 
 			for (let j = 0; j < datesSet.length; j++) {
-				const date = new Date(datesSet[j]).toLocaleDateString('en-US', dateOptions);
+				const date = datesSortedLocaleString[j];
 				if (formattedDate === date) {
 					datesWithCheckins[j].checkins.push(checkin.profiles?.pfp_url);
 				}
@@ -78,15 +93,75 @@
 		<div class="h-[300px] w-full bg-slate-500"></div>
 	{/if}
 
+	<!-- <pre>{JSON.stringify(CheckinsWithProfiles, null, 2)}</pre> -->
+
+	{#if datesWithCheckins[0]?.date !== new Date().toLocaleDateString('en-US', dateOptions)}
+		<p class="text-xl font-semibold text-slate-400">
+			{new Date().toLocaleDateString('en-US', dateOptions)}
+		</p>
+		{#if session?.user}
+			<form action="?/check_in" method="POST">
+				<Button type="submit">Check-in</Button>
+			</form>
+		{:else}
+			<Dialog.Root bind:open={dialogOpen}>
+				<Dialog.Trigger>
+					<Button>Check-in</Button>
+				</Dialog.Trigger>
+				<Dialog.Content>
+					<Dialog.Header>
+						<Dialog.Title>Login with Twitch</Dialog.Title>
+						<Dialog.Description>
+							You'll need to login with your Twitch account to check-in.
+						</Dialog.Description>
+					</Dialog.Header>
+					<Dialog.Footer>
+						<Button variant="outline" on:click={() => (dialogOpen = false)}>Cancel</Button>
+						<form action="?/login" method="POST">
+							<Button type="submit">Login</Button>
+						</form>
+					</Dialog.Footer>
+				</Dialog.Content>
+			</Dialog.Root>
+		{/if}
+	{/if}
 	{#each datesWithCheckins as date, i}
 		<p class="text-xl font-semibold text-slate-400">
-			{new Date(date.date).toLocaleDateString('en-US', dateOptions)}
+			{date.date}
 		</p>
-		{#each date.checkins as checkin}
-			<img class="h-16 w-16 rounded-full" src={checkin} alt="" />
-		{/each}
+		<div class="flex flex-wrap gap-2">
+			{#each date.checkins as checkin}
+				<img class="h-16 w-16 rounded-full" src={checkin} alt="" />
+			{/each}
+		</div>
+		{#if new Date().toLocaleDateString('en-US', dateOptions) === date.date}
+			{#if session?.user}
+				<form action="?/check_in" method="POST">
+					<Button type="submit">Check-in</Button>
+				</form>
+			{:else}
+				<Dialog.Root bind:open={dialogOpen}>
+					<Dialog.Trigger>
+						<Button>Check-in</Button>
+					</Dialog.Trigger>
+					<Dialog.Content>
+						<Dialog.Header>
+							<Dialog.Title>Login with Twitch</Dialog.Title>
+							<Dialog.Description>
+								You'll need to login with your Twitch account to check-in.
+							</Dialog.Description>
+						</Dialog.Header>
+						<Dialog.Footer>
+							<Button variant="outline" on:click={() => (dialogOpen = false)}>Cancel</Button>
+							<form action="?/login" method="POST">
+								<Button type="submit">Login</Button>
+							</form>
+						</Dialog.Footer>
+					</Dialog.Content>
+				</Dialog.Root>
+			{/if}
+		{/if}
 	{/each}
-
 	<form action="?/dummydata" method="POST">
 		<button>Dummy Data</button>
 	</form>

@@ -1,3 +1,5 @@
+import { redirect } from '@sveltejs/kit';
+
 import type { Actions } from '@sveltejs/kit';
 
 export const load = async ({ locals }) => {
@@ -34,6 +36,11 @@ export const actions: Actions = {
 		const payload = [
 			{
 				id: crypto.randomUUID(),
+				created_at: new Date().toISOString(),
+				profile_id: userData.id
+			},
+			{
+				id: crypto.randomUUID(),
 				created_at: '2024-04-04 21:38:12+00',
 				profile_id: userData.id
 			},
@@ -65,6 +72,58 @@ export const actions: Actions = {
 		];
 
 		const { error } = await supabase.from('check_ins').insert(payload);
+
+		if (error) {
+			console.error(error);
+			return { error };
+		}
+	},
+	login: async ({ locals: { supabase } }) => {
+		const { data, error } = await supabase.auth.signInWithOAuth({
+			provider: 'twitch',
+			options: {
+				redirectTo: 'http://localhost:5173/auth/confirm',
+				scopes: 'channel:read:subscriptions bits:read'
+			}
+		});
+		if (error) {
+			console.error(error);
+			return redirect(303, '/auth/error');
+		} else {
+			return redirect(303, data.url);
+		}
+	},
+	check_in: async ({ locals: { session, supabase } }) => {
+		const currentDate = new Date();
+		const startDate = new Date(
+			currentDate.getFullYear(),
+			currentDate.getMonth(),
+			currentDate.getDate()
+		);
+		const formattedStartDate = startDate.toISOString();
+
+		// Let's check if the user already has a check-in for today
+		const { data: checkInsData, error: checkInsError } = await supabase
+			.from('check_ins')
+			.select('*')
+			.gte('created_at', formattedStartDate);
+
+		if (checkInsError) {
+			console.error(checkInsError);
+			return { checkInsError };
+		}
+
+		if (checkInsData.length > 0) {
+			console.log("Homie, you've already checked in today!");
+			return { error: "You've already checked in today!" };
+		}
+
+		console.log(checkInsData);
+
+		const { error } = await supabase.from('check_ins').insert({
+			created_at: new Date().toISOString(),
+			profile_id: session?.user?.id
+		});
 
 		if (error) {
 			console.error(error);
