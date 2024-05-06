@@ -98,9 +98,14 @@ export const actions: Actions = {
 		const startDate = new Date(
 			currentDate.getFullYear(),
 			currentDate.getMonth(),
-			currentDate.getDate()
+			currentDate.getDate(),
+			0,
+			0,
+			0
 		);
 		const formattedStartDate = startDate.toISOString();
+
+		console.log(formattedStartDate);
 
 		// Let's check if the user already has a check-in for today
 		const { data: checkInsData, error: checkInsError } = await supabase
