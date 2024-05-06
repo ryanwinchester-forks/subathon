@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import toast, { Toaster } from 'svelte-french-toast';
 
 	export let data;
 	let { session, supabase } = data;
@@ -69,11 +70,21 @@
 
 	let twitchReady: boolean = false;
 
+	export let form;
+
 	onMount(() => {
 		twitchReady = true;
 		console.log('onMount: ', dates);
+		if (form?.success) {
+			toast.success('Check-in successful!', { icon: '👏' });
+		}
+		if (form?.error) {
+			toast.error('Check-in failed!', { icon: '😥' });
+		}
 	});
 </script>
+
+<Toaster />
 
 <div class="h-3 w-full bg-pink-500"></div>
 <div class="h-3 w-full bg-violet-700"></div>
@@ -136,8 +147,11 @@
 		</div>
 		{#if new Date().toLocaleDateString('en-US', dateOptions) === date.date}
 			{#if session?.user}
-				<form action="?/check_in" method="POST">
+				<form action="?/check_in" method="POST" class="flex flex-col items-center gap-2">
 					<Button type="submit">Check-in</Button>
+					{#if form?.error}
+						<p class="text-red-500">{form.error}</p>
+					{/if}
 				</form>
 			{:else}
 				<Dialog.Root bind:open={dialogOpen}>
