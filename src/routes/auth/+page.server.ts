@@ -7,7 +7,7 @@ export const actions: Actions = {
 		const { data, error } = await supabase.auth.signInWithOAuth({
 			provider: 'twitch',
 			options: {
-				redirectTo: 'http://localhost:5173/auth/confirm',
+				redirectTo: 'http://localhost:5173/auth/callback',
 				scopes: 'channel:read:subscriptions bits:read'
 			}
 		});
