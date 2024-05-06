@@ -39,7 +39,10 @@
 
 	interface DatesWithCheckins {
 		date: string;
-		checkins: string[];
+		checkins: {
+			username: string | null;
+			pfp_url: string | null;
+		}[];
 	}
 
 	let datesWithCheckins: Array<DatesWithCheckins> = [];
@@ -62,7 +65,10 @@
 			for (let j = 0; j < datesSet.length; j++) {
 				const date = datesSortedLocaleString[j];
 				if (formattedDate === date) {
-					datesWithCheckins[j].checkins.push(checkin.profiles?.pfp_url);
+					datesWithCheckins[j].checkins.push({
+						pfp_url: checkin.profiles?.pfp_url,
+						username: checkin.profiles?.twitch_username
+					});
 				}
 			}
 		}
@@ -141,8 +147,10 @@
 			{date.date}
 		</p>
 		<div class="flex flex-wrap gap-2">
-			{#each date.checkins as checkin}
-				<img class="h-16 w-16 rounded-full" src={checkin} alt="" />
+			{#each date.checkins as { username, pfp_url }}
+				<a href={`https://www.twitch.tv/${username}`} target="_blank">
+					<img class="h-16 w-16 rounded-full" src={pfp_url} alt="" /></a
+				>
 			{/each}
 		</div>
 		{#if new Date().toLocaleDateString('en-US', dateOptions) === date.date}
