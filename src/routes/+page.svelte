@@ -19,7 +19,8 @@
 	const dateOptions: Intl.DateTimeFormatOptions = {
 		weekday: 'long',
 		month: 'long',
-		day: 'numeric'
+		day: 'numeric',
+		timeZone: 'Pacific/Auckland'
 	};
 
 	let dates: Date[] =
