@@ -106,6 +106,7 @@ export const actions: Actions = {
 		const { data: checkInsData, error: checkInsError } = await supabase
 			.from('check_ins')
 			.select('*')
+			.eq('profile_id', session?.user?.id)
 			.gte('created_at', formattedStartDate);
 
 		if (checkInsError) {
