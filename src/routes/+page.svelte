@@ -176,7 +176,7 @@
 			{/if}
 		{/if}
 	{/each}
-	<form action="?/dummydata" method="POST">
+	<!-- <form action="?/dummydata" method="POST">
 		<button>Dummy Data</button>
-	</form>
+	</form> -->
 </div>
