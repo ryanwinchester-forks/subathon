@@ -96,12 +96,14 @@ export const actions: Actions = {
 	check_in: async ({ locals: { session, supabase } }) => {
 		const currentDate = new Date();
 		const startDate = new Date(
-			currentDate.getUTCFullYear(),
-			currentDate.getUTCMonth(),
-			currentDate.getUTCDate(),
-			0,
-			0,
-			0
+			Date.UTC(
+				currentDate.getUTCFullYear(),
+				currentDate.getUTCMonth(),
+				currentDate.getUTCDate(),
+				0,
+				0,
+				0
+			)
 		);
 
 		const formattedStartDate = startDate.toISOString();
