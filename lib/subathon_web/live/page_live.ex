@@ -19,6 +19,7 @@ defmodule SubathonWeb.PageLive do
       Accounts.list_check_ins()
       |> Repo.preload([:profile])
       |> Enum.group_by(& &1.date_nz)
+      |> Enum.sort_by(&elem(&1, 0), {:desc, Date})
 
     socket =
       socket
