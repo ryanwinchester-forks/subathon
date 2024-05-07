@@ -24,5 +24,11 @@ Repo.transaction(fn ->
 
   Repo.insert!(%Subathon.EndTime{end_time: ~U[2024-08-02 00:01:55.000000Z]})
 
-  {:ok, _check_in} = Accounts.create_check_in(profile.id)
+  for date <- Date.range(~D[2024-05-03], ~D[2024-05-07]) do
+    Repo.insert!(%Accounts.CheckIn{
+      profile_id: profile.id,
+      date_nz: date,
+      inserted_at: DateTime.new!(date, ~T[12:00:00.000000])
+    })
+  end
 end)

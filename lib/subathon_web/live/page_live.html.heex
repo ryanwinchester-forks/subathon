@@ -10,7 +10,9 @@
 
   <%!-- If there are no check-ins yet today.... --%>
   <div :if={not today_in_check_ins?(@check_ins, @date_nz)}>
-    <p class="text-xl font-semibold text-slate-400"><%= @date_nz %></p>
+    <p class="text-xl font-semibold text-slate-400">
+      <%= Calendar.strftime(@date_nz, "%A, %B %-d") %>
+    </p>
     <.button
       type="button"
       class="bg-primary text-primary-foreground hover:bg-primary/90"
@@ -23,7 +25,7 @@
   <%!-- All the check-ins --%>
   <div :for={{date, check_ins} <- @check_ins}>
     <h3 class="text-xl font-semibold text-slate-400">
-      <%= date %>
+      <%= Calendar.strftime(date, "%A, %B %-d") %>
     </h3>
     <div class="flex flex-wrap gap-2">
       <a
