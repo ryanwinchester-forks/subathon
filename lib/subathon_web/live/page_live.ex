@@ -62,14 +62,14 @@ defmodule SubathonWeb.PageLive do
       |> Accounts.get_check_in!()
       |> Repo.preload([:profile])
 
+    # This is kinda shit, but we ship it.
     socket =
-      update(
-        socket,
-        :check_ins,
-        &Map.update(&1, check_in.date_nz, [check_in], fn check_ins ->
-          [check_in | check_ins]
-        end)
-      )
+      update(socket, :check_ins, fn check_ins ->
+        check_ins
+        |> Map.new()
+        |> Map.update(check_in.date_nz, [check_in], &[check_in | &1])
+        |> Enum.sort_by(&elem(&1, 0), {:desc, Date})
+      end)
 
     {:noreply, socket}
   end
