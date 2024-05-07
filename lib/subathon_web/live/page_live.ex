@@ -32,7 +32,7 @@ defmodule SubathonWeb.PageLive do
   def handle_params(%{"check-in" => _}, _url, socket) do
     socket =
       socket
-      |> push_event("check-in", %{})
+      |> do_check_in(socket.assigns.current_profile)
       |> push_patch(to: ~p"/", replace: true)
 
     {:noreply, socket}
@@ -50,15 +50,7 @@ defmodule SubathonWeb.PageLive do
         {:noreply, redirect(socket, to: ~p"/auth?check-in")}
 
       %Profile{} = profile ->
-        case Accounts.create_check_in(profile.id) do
-          {:ok, _check_in} ->
-            Logger.info("Checked in user: #{profile.twitch_username}")
-            {:noreply, socket}
-
-          {:error, changeset} ->
-            Logger.error("Could not check in user: #{inspect(changeset)}")
-            {:noreply, put_flash(socket, :error, "couldn't check in")}
-        end
+        {:noreply, do_check_in(socket, profile)}
     end
   end
 
@@ -84,6 +76,18 @@ defmodule SubathonWeb.PageLive do
   # ----------------------------------------------------------------------------
   # Helpers
   # ----------------------------------------------------------------------------
+
+  defp do_check_in(socket, profile) do
+    case Accounts.create_check_in(profile.id) do
+      {:ok, _check_in} ->
+        Logger.info("Checked in user: #{profile.twitch_username}")
+        socket
+
+      {:error, changeset} ->
+        Logger.error("Could not check in user: #{inspect(changeset)}")
+        put_flash(socket, :error, "couldn't check in")
+    end
+  end
 
   defp checked_in?(_check_ins, nil), do: false
 
