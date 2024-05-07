@@ -1,3 +1,9 @@
+`TWITCH_APP_CLIENT_ID`
+`TWITCH_APP_CLIENT_SECRET`
+
+For production DB:
+`DB_URL`
+
 # create-svelte
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).

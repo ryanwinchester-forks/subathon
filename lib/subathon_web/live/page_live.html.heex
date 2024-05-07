@@ -1,0 +1,48 @@
+<div class="min-w-screen flex min-h-screen flex-col items-center gap-16 bg-neutral-950 p-8">
+  <iframe
+    loading="lazy"
+    title="thecoppinger Twitch Stream"
+    src="https://player.twitch.tv/?autoplay=true&muted=true&parent=www.thecoppinger.com&channel=thecoppinger"
+    height="300px"
+    width="400px"
+  >
+  </iframe>
+
+  <div :if={not Map.has_key?(@check_ins, @date_nz)}>
+    <p class="text-xl font-semibold text-slate-400"><%= @date_nz %></p>
+    <.button
+      type="button"
+      class="bg-primary text-primary-foreground hover:bg-primary/90"
+      phx-click="check-in"
+    >
+      Check-in
+    </.button>
+  </div>
+
+  <div :for={{date, check_ins} <- @check_ins}>
+    <h3 class="text-xl font-semibold text-slate-400">
+      <%= date %>
+    </h3>
+    <div class="flex flex-wrap gap-2">
+      <a
+        :for={check_in <- check_ins}
+        href={"https://www.twitch.tv/#{check_in.profile.twitch_username}"}
+        target="_blank"
+      >
+        <img
+          class="h-16 w-16 rounded-full"
+          src={check_in.profile.pfp_url}
+          alt={check_in.profile.twitch_username}
+        />
+      </a>
+      <.button
+        :if={not checked_in?(check_ins, @current_profile) and @date_nz == date}
+        type="button"
+        class="bg-primary text-primary-foreground hover:bg-primary/90"
+        phx-click="check-in"
+      >
+        Check-in
+      </.button>
+    </div>
+  </div>
+</div>
