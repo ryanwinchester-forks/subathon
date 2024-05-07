@@ -11,25 +11,27 @@
   <%!-- If there are no check-ins yet today.... --%>
   <div :if={not today_in_check_ins?(@check_ins, @date_nz)}>
     <p class="text-xl font-semibold text-slate-400">
-      <%= Calendar.strftime(@date_nz, "%A, %B %-d") %>
+      <%= Calendar.strftime(@date_nz, "%A, %B %-d, %Y") %>
     </p>
-    <.button
-      type="button"
-      class="bg-primary text-primary-foreground hover:bg-primary/90"
-      phx-click="check-in"
-    >
-      Check-in
-    </.button>
+    <div class="flex justify-center">
+      <.button
+        type="button"
+        class="flex justify-center bg-primary text-primary-foreground hover:bg-primary/90"
+        phx-click="check-in"
+      >
+        Check-in
+      </.button>
+    </div>
   </div>
 
   <%!-- All the check-ins --%>
-  <div :for={{date, check_ins} <- @check_ins}>
-    <h3 class="text-xl font-semibold text-slate-400">
-      <%= Calendar.strftime(date, "%A, %B %-d") %>
+  <div :for={{date, check_ins} <- @check_ins} class="mb-4">
+    <h3 class="text-xl font-semibold text-slate-400 mb-6">
+      <%= Calendar.strftime(date, "%A, %B %-d, %Y") %>
     </h3>
-    <div class="flex flex-wrap gap-2">
+    <div :for={check_in <- check_ins} c lass="flex flex-wrap gap-2">
       <a
-        :for={check_in <- check_ins}
+        class="flex justify-center"
         href={"https://www.twitch.tv/#{check_in.profile.twitch_username}"}
         target="_blank"
       >
@@ -39,10 +41,12 @@
           alt={check_in.profile.twitch_username}
         />
       </a>
+    </div>
+    <div class="flex justify-center">
       <.button
         :if={not checked_in?(check_ins, @current_profile) and @date_nz == date}
         type="button"
-        class="bg-primary text-primary-foreground hover:bg-primary/90"
+        class="bg-primary text-primary-foreground hover:bg-primary/90 mt-4"
         phx-click="check-in"
       >
         Check-in
