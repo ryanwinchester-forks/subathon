@@ -90,6 +90,10 @@ defmodule SubathonWeb.PageLive do
     end
   end
 
+  defp today_in_check_ins?(check_ins, date_nz) do
+    List.keymember?(check_ins, date_nz, 0)
+  end
+
   defp checked_in?(_check_ins, nil), do: false
 
   defp checked_in?(check_ins, %Profile{id: profile_id}) do

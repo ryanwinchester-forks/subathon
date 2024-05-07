@@ -8,7 +8,8 @@
   >
   </iframe>
 
-  <div :if={not List.keymember?(@check_ins, @date_nz, 0)}>
+  <%!-- If there are no check-ins yet today.... --%>
+  <div :if={not today_in_check_ins?(@check_ins, @date_nz)}>
     <p class="text-xl font-semibold text-slate-400"><%= @date_nz %></p>
     <.button
       type="button"
@@ -19,6 +20,7 @@
     </.button>
   </div>
 
+  <%!-- All the check-ins --%>
   <div :for={{date, check_ins} <- @check_ins}>
     <h3 class="text-xl font-semibold text-slate-400">
       <%= date %>
